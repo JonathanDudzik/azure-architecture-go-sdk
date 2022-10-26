@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 
 	"log"
@@ -9,7 +8,7 @@ import (
 )
 
 func AuthRequired(c *gin.Context) {
-	session := sessions.Default(c)
+	session := sessionsCookie.Default(c)
 	user := session.Get("user")
 	if user == nil {
 		log.Println("User not logged in")

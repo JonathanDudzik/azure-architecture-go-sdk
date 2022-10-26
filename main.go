@@ -5,9 +5,6 @@ import (
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 
-	//"html/template"
-	//"strings"
-
 	globals "github.com/jonathandudzik/gin_session_auth/globals"
 	middleware "github.com/jonathandudzik/gin_session_auth/middleware"
 	routes "github.com/jonathandudzik/gin_session_auth/routes"
@@ -16,10 +13,11 @@ import (
 func main() {
 	router := gin.Default()
 
-	// router.Static("/assets", "./assets")
-	// router.LoadHTMLGlob("templates/*.html")
+	store := cookie.NewStore(globals.Secret)
+	router.Use(sessions.SessionsMany([]string{"redis", "cookie"}, store))
 
-	router.Use(sessions.Sessions("session", cookie.NewStore(globals.Secret)))
+	// redisStore := cookie.NewStore(globals.Secret)
+	// router.Use(sessions.Sessions("redis", redisStore))
 
 	public := router.Group("/")
 	routes.PublicRoutes(public)
