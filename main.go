@@ -14,10 +14,7 @@ func main() {
 	router := gin.Default()
 
 	store := cookie.NewStore(globals.Secret)
-	router.Use(sessions.SessionsMany([]string{"redis", "cookie"}, store))
-
-	// redisStore := cookie.NewStore(globals.Secret)
-	// router.Use(sessions.Sessions("redis", redisStore))
+	router.Use(sessions.Sessions("cookie", store))
 
 	public := router.Group("/")
 	routes.PublicRoutes(public)
