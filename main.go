@@ -1,64 +1,41 @@
 package main
 
 import (
+	// import standard library packages
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil" //this is deplicated?
 	"log"
 	"os"
 
+	// import Azure SDK packages
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
 )
 
-// show debugging
-// show exploring code through VSCode (hover and finding definitions) and browser docs
+// declare the main function
 func main() {
 	cred, err := azidentity.NewAzureCLICredential(nil)
 	if err != nil {
 		log.Fatalf("failed to obtain CLI credential: %v", err)
 	}
 
-	// First just use a string
-	// second use this library (first library)
-	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
-	resourceGroupName := os.Getenv("AZURE_RESOURCE_GROUP")
-	resourceGroupLocation := os.Getenv("AZURE_RESOURCE_LOCATION")
-	deploymentName := "deployARM-how-to"
 	ctx := context.Background()
+	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
+	resourceGroupName := "Go-SDK-VM"
+	resourceGroupLocation := "eastus2"
 
-	// at first do not return anything
-	// then return just an error (no new vars)
-	// then return an error and a value
 	err = createResourceGroup(ctx, cred, subscriptionID, resourceGroupName, resourceGroupLocation)
-	// simple err first, then formatted
 	if err != nil {
 		log.Fatalf("Failed at createResourceGroup: %v", err)
-	} //show with a then statement but then explain the convention of just a new line before the if err message
+	}
 
+	deploymentName := "deployVM"
 	_ = deployTemplate(ctx, cred, subscriptionID, resourceGroupName, deploymentName)
 }
 
-func readJSON(path string) (map[string]interface{}, error) {
-	templateFile, err := ioutil.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	template := make(map[string]interface{})
-	// explain how you can define the var in this if statement
-	if err := json.Unmarshal(templateFile, &template); err != nil {
-		return nil, err
-	}
-
-	return template, nil
-}
-
-// createResourceGroup creates an http pipeline and checks if the resource group already exists.
-// If the resource group exists no error is return. If the resource group does not exists, one is created.
 func createResourceGroup(
 	ctx context.Context,
 	cred azcore.TokenCredential,
@@ -66,17 +43,11 @@ func createResourceGroup(
 	resourceGroupName string,
 	resourceGroupLocation string,
 ) error {
-	// first time do not have any logging
-	// add the logs to this first function then go back and add them to the second function
-	log.Print("creatingResourceGroup called...")
-
 	resourceGroupClient, err := armresources.NewResourceGroupsClient(subscriptionId, cred, nil)
 	if err != nil {
 		return fmt.Errorf("failed to create http pipeline client instance: %v", err)
 	}
-	log.Print("resource group http client created successfully!")
 
-	// Add this later
 	boolResp, err := resourceGroupClient.CheckExistence(ctx, resourceGroupName, nil)
 	if err != nil {
 		return fmt.Errorf("error while checking if resource group already exists: %v", err)
@@ -103,7 +74,7 @@ func deployTemplate(
 	resourceGroupName string,
 	deploymentName string,
 ) error {
-	// show how to temporarily ignore a value
+	parameters, _ := readJSON("parameters.json")
 	template, _ := readJSON("template.json")
 
 	deploymentsClient, err := armresources.NewDeploymentsClient(subscriptionId, cred, nil)
@@ -119,8 +90,9 @@ func deployTemplate(
 		deploymentName,
 		armresources.Deployment{
 			Properties: &armresources.DeploymentProperties{
-				Mode:     to.Ptr(armresources.DeploymentModeIncremental),
-				Template: template,
+				Mode:       to.Ptr(armresources.DeploymentModeIncremental),
+				Parameters: parameters,
+				Template:   template,
 			},
 		},
 		nil,
@@ -157,4 +129,20 @@ func deployTemplate(
 	// }
 	// return &resp.DeploymentValidateResult, nil
 	return nil
+}
+
+func readJSON(path string) (map[string]interface{}, error) {
+	localFile, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	mappedJSON := make(map[string]interface{})
+	// explain how you can define the var in this if statement
+	err = json.Unmarshal(localFile, &mappedJSON)
+	if err != nil {
+		return nil, err
+	}
+
+	return mappedJSON, nil
 }
