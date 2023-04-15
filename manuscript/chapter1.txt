@@ -21,6 +21,24 @@ Multi-paragraph asides are more pleasant using this syntax.
 
 
 {blurb, class: warning}
+# A Note About Asides
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
+This is a warning!
 This is a warning!
 {/blurb}
 
@@ -30,6 +48,20 @@ B> This is a centered blurb. This is the only way to center text in Markua.
 B> Yes, we're in Font Awesome!
 
 {icon: github}
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
+B> So is GitHub, of course. Unicorns.
 B> So is GitHub, of course. Unicorns.
 
 I will mention what kind of previous knowledge you may find helpful. With that being said, I also firmly
