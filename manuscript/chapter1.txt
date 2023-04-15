@@ -23,22 +23,38 @@ Multi-paragraph asides are more pleasant using this syntax.
 {blurb, class: warning}
 # A Note About Asides
 This is a warning!
+
+This is a warning!
+
+This is a warning!
+
+This is a warning!
+
+This is a warning!
+
+This is a warning!
+
+This is a warning!
+
+This is a warning!
+
+This is a warning!
+
+This is a warning!
+
 This is a warning!
 This is a warning!
+
 This is a warning!
+
 This is a warning!
+
 This is a warning!
+
 This is a warning!
+
 This is a warning!
-This is a warning!
-This is a warning!
-This is a warning!
-This is a warning!
-This is a warning!
-This is a warning!
-This is a warning!
-This is a warning!
-This is a warning!
+
 This is a warning!
 {/blurb}
 
