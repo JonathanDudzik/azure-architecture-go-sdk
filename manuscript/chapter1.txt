@@ -21,9 +21,9 @@ Multi-paragraph asides are more pleasant using this syntax.
 
 TESTING AN ICON INSIDE AN ASIDE
 
-{aside}
 {icon: github}
 B> So is GitHub, of course. Unicorns.
+{aside}
 # A Note About Asides
 
 This is a longer aside.
@@ -34,7 +34,6 @@ Asides can also have headings, like this one does.
 
 Multi-paragraph asides are more pleasant using this syntax.
 {/aside}
-
 
 I will mention what kind of previous knowledge you may find helpful. With that being said, I also firmly
 believe that even in absence of previous "coding" knowledge or experience, if you are motivated to
