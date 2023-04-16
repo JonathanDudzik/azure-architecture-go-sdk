@@ -1,18 +1,23 @@
-# I will walk you through my own implementation 
+# Chapter 2
+I will walk you through my own implementation 
 of the Azure Go SDK that does the following:
 - Authenticates an Azure user;
 - Creates an instance of a http client for making requests;
 - Creates a resource group;
 - And deploys an Azure Resource Management, or ARM, Template
 
-To interactively authenticate with the CLI, complete the following steps:
-Create a basic account with a tenant and subscription.
-Install the Azure CLI.
-Use the CLI "az login" command to open a browser and sign-in.
+## Use the Azure CLI for Authentication
+As a developer working in a development only environment, authenticating 
+through the CLI is the quickest way to get started.
 
+To interactively authenticate with the CLI, complete the following steps:
+1. Create a basic account with a tenant and subscription.
+1. Install the Azure CLI.
+1. Use the CLI "az login" command to open a browser and sign-in.
 These steps sign-in my user principle and provide a token that the 
 NewAzureCLICredential function will use across the Go SDK.
-Give the SDK Access to Azure
+
+## Give the SDK Access to Azure
 [1] The first step in using the SDK is to provide an authentication token for creating and deploying resources. All the code in this file is part of the main package and so I must name it as such. All Go programs must begin execution in the main package.
 
 [5-9] Here at the top of the file, I am importing some of the language’s standard library packages that I will use and explain later.
