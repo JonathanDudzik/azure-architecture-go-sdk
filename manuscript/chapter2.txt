@@ -1,0 +1,227 @@
+# I will walk you through my own implementation 
+of the Azure Go SDK that does the following:
+- Authenticates an Azure user;
+- Creates an instance of a http client for making requests;
+- Creates a resource group;
+- And deploys an Azure Resource Management, or ARM, Template
+
+To interactively authenticate with the CLI, complete the following steps:
+Create a basic account with a tenant and subscription.
+Install the Azure CLI.
+Use the CLI "az login" command to open a browser and sign-in.
+
+These steps sign-in my user principle and provide a token that the 
+NewAzureCLICredential function will use across the Go SDK.
+Give the SDK Access to Azure
+[1] The first step in using the SDK is to provide an authentication token for creating and deploying resources. All the code in this file is part of the main package and so I must name it as such. All Go programs must begin execution in the main package.
+
+[5-9] Here at the top of the file, I am importing some of the language’s standard library packages that I will use and explain later.
+
+[12-15] On the next few lines, I am importing the required Azure Go SDK packages. If you are using VS Code as your text editor, you should be able to get a link to these specific library’s documentation by hovering over the line of code that imports that library. You can also manually search the go.dev site for the package.
+
+[19] Next, I declare the required main function. I have seen Go programs that opt to put the main function at the bottom of the main package, but I personally like it to be at the top as it is the first function that gets called when the program is executed.
+
+[20] Here, I am declaring two variables that will be assigned the returned values of the NewAzureCLICredential function. The signature of NewAzureCLICredential shows the returned values: The first value it returns, and the value that will be assigned to cred, is an instance of the AzureCLICredential struct. The second value it returns, that will be assigned to err (E. R. R.), is an instance of the built-in Go error type. Also according to the signature, NewAzureCLICredential accepts a parameter of options, but I pass nil as the parameter to accept the default options.
+
+[21-23] The next few lines will log Fatal to print the error message and exit the program if err (E. R. R.) is not nil. In my case, the NewAzureCLICredential function would assign a string to err should something go wrong. This is the conventional interface for representing an error condition in Go, with the nil value representing no error.
+Call the createResourceGroup Function
+After obtaining an authentication token, the next step will be to create a resource group for the deployment. A resource group is a container that holds related resources that you want to manage as a group. That means that all the resources in your resource group should share the same lifecycle: being deployed, updated, and deleted together. When you create a resource group, you need to provide a location where that resource group’s metadata will be stored.
+
+[25] The next few lines are simply assigning identifiers and context to variables that will need to be passed into function calls as parameters. On this line, I create an empty context by using the background function; I have to include the context  only because it is a required parameter for the createResourceGroup function.
+
+[26]  Since the createResourceGroup function takes my subscriptionID string as a parameter and I consider that to be “sensitive” information, I have used the os.getenv method to retrieve subscriptionID value from my local environment variables. Not only is this the suggested way to handle this situation in the Go SDK docs, but I believe it is one of the fastest and easiest ways to store and retrieve sensitive information that your code needs. Whether you use local environment variables or not, keep in mind that when working with sensitive data like API keys, account credentials, or unique identifiers, you should not commit that sensitive information to version control (for example, a GitHub repository). The reason for this is that it can be complicated to remove traces of sensitive data once it has been recorded in version control history. I verify that subscriptionID is populating correctly by creating a breakpoint and running the program in debug mode. I then use the debug console to check the value of subscriptionID. If the variables are not populating correctly, you may find that restarting your terminal and code editor fixes the issue.
+
+[27-28] The Resource Group name and location are additional important parameters required for the createResourceGroup function.
+
+[30] I choose to encapsulate all the steps for creating a resource group into one function called createResourceGroup which will return a non-nil error if anything should go wrong. I could potentially also return a struct containing the newly created resource group. But since I do not need the response anywhere else, I am only returning an error.
+
+[31-33] In the same way that I handled an error above, these lines of code will print the error message and exit the program if error is not nil. In other words, if something goes wrong while trying to create the resource group.
+Define the createResourceGroup Function
+[42-48] In the signature of createResourceGroup you can see that it requires five parameters and returns an error. The parameters each have a type assigned to them. This is great as I can quickly see exactly which parameters to include when I call this function.
+
+[49-52] The first order of business is to create a client for the resource group. The SDK is built on-top-of the Azure REST API. So it needs a way to tap into the underlying HTTP “pipeline” used to make requests and handle responses. Azure uses the term client to refer to a specific instance of an HTTP pipeline for a specific Azure resource. As the developer, it is my responsibility to call the SDK function that creates a client instance for the resource I want to make requests for. The SDK function for creating an instance of the client is NewResourceGroupsClient. If there is an error while creating the client, I am returning that error to the calling function instead of simply logging it, as I did above.
+
+[54] The CheckExistence function takes a resource group name and checks if it already exists in the Azure subscription. This is important because calling the CreateOrUpdate function when it is not necessary is a waste of network resources. The first value this function returns is a struct with a field name of Success and a field value of boolean. If Success is equal to true, the resource group does already exist. In accordance with the SDK’s convention, I have used nil as the last parameter to accept the default options.
+
+[55-62] After the CheckExistance function is evaluated, there are three possible outcomes: One, there is an error and I return it to the calling function. Two, the response boolean evaluates to true, meaning the resource group exists. In that case, I will log a message and return to the calling function an error value of nil representing no error. Three, I log that the resource does not yet exist and continue execution. Remember, if there is no return statement, execution inside the current function will continue as normal.
+
+[64-75] If execution of my program reaches this line, a new resource group will be created (or updated). The CreateOrUpdate function returns the newly created or updated resource group. I am not doing much with the returned value other than printing it out, but I have the option to return it to the calling function. One other notable thing about the CreateOrUpdate function is that the parameter containing the resource location is a struct.  When creating the location environment variable, make sure that you format the location string correctly; all lowercase letters and no spaces.
+
+[77] If none of the previous operations have returned an error, all has gone well and the resource group should be logged in my terminal. I return a nil value to the calling function.
+Define the deployTemplate Function
+The deployTemplate function follows much of the same logic as the createResourceGroup function:
+
+[87-90] A client is created or the program is stopped in the case where an error occurs
+
+[92-100] In the CheckExistence function, I check if the deployment already exists. As with the resource group check, I return a struct with a Success boolean and an error to determine if the program should continue creating the deployment.
+
+[102-110] Here is where the logic diverges from the previous createResourceGroup function. The readJSON function returns a Map type containing the template and parameters for the deployment.
+
+[139] When provided with a valid JSON file, this returns a string of the JSON content.
+
+[146] This creates a Map that will store the data from the JSON string. Copy the link in the comment above to learn more.
+
+[150] This stores the JSON string inside the Map and checks for an error. Copy the link in the comment above to learn more.
+
+[155] If there have not been any errors, the Map containing the JSON data and an error with the value nil are returned.
+
+[112-122] Once the Map of both the template and parameter are in scope, I am ready to execute the deployment for the indicated resource group. By convention, methods that start a long running operation or “LRO” are prefixed with "Begin" and return a Poller. The Poller is used to periodically poll the service until the operation finishes. The BeginCreateOrUpdate function takes a number of parameters, but the armresources.Deployment.Properties is of particular interest as it accepts the template and parameters Maps and requires that a Mode be defined as either “incremental” or “complete”. In Incremental mode, resources are deployed without deleting existing resources that are not included in the template. In Complete mode, resources are deployed and existing resources in the resource group that are not included in the template are deleted. Be careful when using Complete mode as you may unintentionally delete resources. Also keep in mind that, in addition to template parameters being included in a Map, parameters could also be hard coded directly in the template file or linked from an external source.
+
+[129-133] The PollUntilDone function is called to eventually either log out that the deployment succeeded or return a non-nil error. Notice how it depends on the poller that the BeginCreateOrUpdate function returned?
+Wrap-up
+If you have followed along with me, you should be able to login to your Azure portal and see that the resource group and resources from the template have been created in your subscription. If something did not work correctly, check and debug your code carefully. If all your troubleshooting attempts do not yield very good results, you can get a working example running by executing the code I used (after changing the subscriptionID value).
+
+Finally, if you have successfully created any Azure resources throughout this presentation, make sure to delete the entire resource group to avoid incurring any undesired costs in your subscription.
+
+# The Code
+
+```
+package main
+
+import (
+	// import standard library packages
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+	"os"
+
+	// import Azure SDK packages
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
+	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
+	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
+)
+
+// declare the main function
+func main() {
+	cred, err := azidentity.NewAzureCLICredential(nil)
+	if err != nil {
+		log.Fatalf("failed to obtain CLI credential: %v", err)
+	}
+
+	ctx := context.Background()
+	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
+	resourceGroupName := "Go-SDK-VM"
+	resourceGroupLocation := "eastus2"
+
+	err = createResourceGroup(ctx, cred, subscriptionID, resourceGroupName, resourceGroupLocation)
+	if err != nil {
+		log.Fatalf("Failed at createResourceGroup: %v", err)
+	}
+
+	deploymentName := "deployVM"
+	_ = deployTemplate(ctx, cred, subscriptionID, resourceGroupName, deploymentName)
+}
+
+func createResourceGroup(
+	ctx context.Context,
+	cred azcore.TokenCredential,
+	subscriptionId string,
+	resourceGroupName string,
+	resourceGroupLocation string,
+) error {
+	resourceGroupClient, err := armresources.NewResourceGroupsClient(subscriptionId, cred, nil)
+	if err != nil {
+		return fmt.Errorf("failed to create http pipeline client instance: %v", err)
+	}
+
+	boolResp, err := resourceGroupClient.CheckExistence(ctx, resourceGroupName, nil)
+	if err != nil {
+		return fmt.Errorf("error while checking if resource group already exists: %v", err)
+	} else if boolResp.Success {
+		log.Printf("requested resource group already exists: %v", resourceGroupName)
+		return nil
+	} else {
+		log.Printf("requested resource group does not yet exist and will been created: %v", resourceGroupName)
+	}
+
+	resourceGroupResponse, err := resourceGroupClient.CreateOrUpdate(ctx, resourceGroupName, armresources.ResourceGroup{Location: to.Ptr(resourceGroupLocation)}, nil)
+	if err != nil {
+		return fmt.Errorf("error while creating a new resource group: %v", err)
+	}
+	log.Printf("resource group has been created: %v", *resourceGroupResponse.ResourceGroup.Name)
+
+	return nil
+}
+
+func deployTemplate(
+	ctx context.Context,
+	cred azcore.TokenCredential,
+	subscriptionId string,
+	resourceGroupName string,
+	deploymentName string,
+) error {
+	parameters, _ := readJSON("parameters.json")
+	template, _ := readJSON("template.json")
+
+	deploymentsClient, err := armresources.NewDeploymentsClient(subscriptionId, cred, nil)
+	if err != nil {
+		log.Fatalf("failed to create client: %v", err)
+	}
+
+	// boolResp, err := deploymentsClient.CheckExistence(ctx, resourceGroupName, deploymentName, nil)
+
+	poller, err := deploymentsClient.BeginCreateOrUpdate(
+		ctx,
+		resourceGroupName,
+		deploymentName,
+		armresources.Deployment{
+			Properties: &armresources.DeploymentProperties{
+				Mode:       to.Ptr(armresources.DeploymentModeIncremental),
+				Parameters: parameters,
+				Template:   template,
+			},
+		},
+		nil,
+	)
+	if err != nil {
+		log.Fatalf("failed to deploy template: %v", err)
+	}
+
+	res, err := poller.PollUntilDone(ctx, nil)
+	if err != nil {
+		log.Fatalf("failed to pull the result: %v", err)
+	}
+
+	fmt.Println(res)
+
+	// pollerResp, err := deploymentsClient.BeginValidate(
+	// 	ctx,
+	// 	resourceGroupName,
+	// 	deploymentName,
+	// 	armresources.Deployment{
+	// 		Properties: &armresources.DeploymentProperties{
+	// 			Template:   template,
+	// 			Parameters: params,
+	// 			Mode:       to.Ptr(armresources.DeploymentModeIncremental),
+	// 		},
+	// 	},
+	// 	nil)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// resp, err := pollerResp.PollUntilDone(ctx, nil)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// return &resp.DeploymentValidateResult, nil
+	return nil
+}
+
+func readJSON(path string) (map[string]interface{}, error) {
+	localFile, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	mappedJSON := make(map[string]interface{})
+	// explain how you can define the var in this if statement
+	err = json.Unmarshal(localFile, &mappedJSON)
+	if err != nil {
+		return nil, err
+	}
+
+	return mappedJSON, nil
+}
+```
