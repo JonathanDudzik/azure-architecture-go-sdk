@@ -45,7 +45,7 @@ resources which may help explain a particularly complex topic.
 ## General Documentation and References
 Here are a few resources for those moments when you do need to, or want to, learn more about Azure or Go:
 
-[The Go Programming Language Specification](https://go.dev/ref/spec)
+abcd [The Go Programming Language Specification](https://go.dev/ref/spec)..
 
 [Microsoft documentation for Go developers](https://learn.microsoft.com/en-us/azure/developer/go/)
 
@@ -136,15 +136,15 @@ or Linux) requires the following (EDIT: following what?):
 - A Microsoft Azure account;
 - And the Azure CLI.
 
-Click on your operating system below for basic setup links to help you 
+Click on (EDIT: are these clickable?) your operating system below for basic setup links to help you 
 get setup on your system.
-## Mac
-- Command Line: https://support.apple.com/guide/terminal/welcome/mac 
+**Mac**
+- Command Line: <https://support.apple.com/guide/terminal/welcome/mac>
 - Text Editor: https://code.visualstudio.com/docs/?dv=osx
 - Go: https://go.dev/doc/install 
 - Azure: https://azure.microsoft.com/en-ca/free/ 
 - CLI: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-macos 
-## Windows
+_Windows_
 - Command line: https://learn.microsoft.com/en-us/powershell/scripting/overview
 - Text Editor: https://code.visualstudio.com/docs/?dv=win
 - Go: https://go.dev/doc/install 

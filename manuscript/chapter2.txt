@@ -80,7 +80,7 @@ Finally, if you have successfully created any Azure resources throughout this pr
 
 # The Code
 
-```
+```go
 package main
 
 import (
