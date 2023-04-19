@@ -1,0 +1,3 @@
+Contents:
+ARM Templates, JSON, Infustructure as code
+deployTemplate and readJSON functions

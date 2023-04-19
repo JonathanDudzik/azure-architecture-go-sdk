@@ -17,22 +17,22 @@ import (
 
 // declare the main function
 func main() {
-	cred, err := azidentity.NewAzureCLICredential(nil)
-	if err != nil {
-		log.Fatalf("failed to obtain CLI credential: %v", err)
-	}
-
 	ctx := context.Background()
 	subscriptionID := os.Getenv("AZURE_SUBSCRIPTION_ID")
 	resourceGroupName := "Go-SDK-VM"
 	resourceGroupLocation := "eastus2"
+	deploymentName := "deployVM"
+
+	cred, err := azidentity.NewAzureCLICredential(nil)
+	if err != nil {
+		log.Fatalf("failed to obtain CLI credential: %v", err)
+	}
 
 	err = createResourceGroup(ctx, cred, subscriptionID, resourceGroupName, resourceGroupLocation)
 	if err != nil {
 		log.Fatalf("Failed at createResourceGroup: %v", err)
 	}
 
-	deploymentName := "deployVM"
 	_ = deployTemplate(ctx, cred, subscriptionID, resourceGroupName, deploymentName)
 }
 

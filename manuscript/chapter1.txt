@@ -1,4 +1,24 @@
+Contents:
+Introduction to the text
+Prerequisites
+General Documentation and References
+Avoid Unnecessary Costs
+Understand the Azure SDK
+Understand Alternatives to the SDK
+---- May separate these two items into new chapter ----
+Setup Local Environment
+Azure subscription and recording the ID
+
 # Chapter 1
+
+I will walk you through my own implementation 
+of the Azure Go SDK that does the following:
+- Authenticates an Azure user;
+- Creates an instance of a http client for making requests;
+- Creates a resource group;
+- And deploys an Azure Resource Management, or ARM, Template
+- And continues exploring Azure services by creating additional ARM templates
+
 ## Introduction to the text
 Topics covered from most time spent to least:
 - Azure cloud platform (taking a services first approach): If you want to get certified, this is an excellent resource! 
@@ -119,7 +139,7 @@ choose to use in place of the Go SDK:
 - Azure CLI;
 - The REST API;
 - Terraform;
-- And Client SDKs for Java, Dot Net, Javascript, Python, C, and C++
+- And Client SDKs for Java, Dot Net, Javascript, Python, C, and C++.
 
 Each of these interfaces merit a bit of research to understand their 
 advantages and disadvantages, but I will not talk more about them here. 
@@ -136,20 +156,30 @@ or Linux) requires the following (EDIT: following what?):
 - A Microsoft Azure account;
 - And the Azure CLI.
 
-Click on (EDIT: are these clickable?) your operating system below for basic setup links to help you 
-get setup on your system.
-**Mac**
+If you would like to follow dudplicate the code in this book for yourself, 
+which I believe will be far more interesting than just reading along, 
+you will need... 
+
+Review the links listed under your operating system 
+to help you get setup with a local environment.
+
+Feel free to use a different setup if you would like. For example, 
+maybe you prefer to use Vim instead of VSCode.
+
+_Mac_
 - Command Line: <https://support.apple.com/guide/terminal/welcome/mac>
 - Text Editor: https://code.visualstudio.com/docs/?dv=osx
 - Go: https://go.dev/doc/install 
 - Azure: https://azure.microsoft.com/en-ca/free/ 
 - CLI: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-macos 
+
 _Windows_
 - Command line: https://learn.microsoft.com/en-us/powershell/scripting/overview
 - Text Editor: https://code.visualstudio.com/docs/?dv=win
 - Go: https://go.dev/doc/install 
 - Azure: https://azure.microsoft.com/en-ca/free/
 - CLI: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-windows?tabs=azure-cli 
+
 ## Linux
 - Cross platform command line tool: https://tabby.sh/ 
 - Text Editor: [Debian or Ubuntu] https://code.visualstudio.com/docs/?dv=linux64_deb 
@@ -158,6 +188,7 @@ _Windows_
 - Azure: https://azure.microsoft.com/en-ca/free/ 
 - CLI: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux 
 
+(EDIT: need to close this chapter)
 
 ***Personal (jonathan.d.wesley) Azure Credentials***
 export AZURE_SUBSCRIPTION_ID="d88a3473-bb31-4a61-80a7-1e614fa1c2cc"
