@@ -1,4 +1,5 @@
-Contents:
+# Contents:
+
 1. How can I authenticate (cover all methods)
 1. Why and steps to use the CLI for authentication
 1. Creating our first function call within main()

@@ -1,3 +1,4 @@
-Contents:
+# Contents
+
 Our first service
 coinciding ARM template
