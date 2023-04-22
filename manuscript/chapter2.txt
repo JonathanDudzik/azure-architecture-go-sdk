@@ -1,4 +1,5 @@
-Contents
+# Contents
+
 1. Creating our Go program main package
 1. Go imports
 1. Go main function
