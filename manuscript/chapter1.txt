@@ -1,8 +1,0 @@
-# Contents
-
-Introduction to the text
-Prerequisites
-General Documentation and References
-Avoid Unnecessary Costs
-Understand the Azure SDK
-Understand Alternatives to the SDK
