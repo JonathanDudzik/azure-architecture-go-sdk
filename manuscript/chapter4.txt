@@ -1,4 +1,3 @@
 # Contents
-
-Azure Resources
+Azure Resources (and the types and levels of resources like service level)
 createResourceGroup

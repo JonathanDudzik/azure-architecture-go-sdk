@@ -1,4 +1,26 @@
 # Contents
+With all the options that exist for managing Azure resources, why would we want to choose Azure templates? Options like the Azure Portal, 
+CLI, and REST API have disadvantages:
+(1) The disadvantage of using the Azure Portal or the CLI is that resource management tasks are not easily reproduced and are error prone. 
+(2) The disadvantage of using one of the langauge specific SDKs or the REST API is that they are not easily distributed across teams and platforms 
+because of being language and environment specific. 
 
+Templates help minimize these downfalls. First, templates can be written in JSON which is a commonly used open standard for 
+structured data that can be parsed by many languages, making it much more language agnostic. Second, because templates are written in 
+JSON files, each task is garunteed to be consistent each time it is executed. Other, more general advantages of ARM templates is that 
+they can be checked-into version control, and deploying resources with automation tools and deployment pipelines becomes much easier.
+
+While we are using the SDK, we are only using it for a small portion of managing our resources; really just establishing a connection 
+with our azure account, creating an Azure Resource Group, and executing an 
+ARM template. The majority of our resource management will happen with templates. Furthermore, it is unavoidable that we will need to 
+use the Azure Portal, CLI, SDK, or REST API to initiate and execute an ARM template.
+
+VOCABULARY: parse.
+
+Let's talk about JavaScript Object Notation (JSON) which is one of the file types that Azure templates can be written in. "The template is a JavaScript Object Notation (JSON) file that defines the infrastructure and configuration for your project. The template 
+uses declarative syntax, which lets you state what you intend to deploy without having to write the sequence of programming commands to 
+create it. In the template, you specify the resources to deploy and the properties for those resources."
+
+NEXT CHAPTER...
 Our first service
 coinciding ARM template

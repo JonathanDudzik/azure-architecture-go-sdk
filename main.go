@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 
 	// import Azure SDK packages
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
@@ -74,8 +75,22 @@ func deployTemplate(
 	resourceGroupName string,
 	deploymentName string,
 ) error {
-	parameters, _ := readJSON("parameters.json")
-	template, _ := readJSON("template.json")
+	bicepFilePath := "templates/az204.bicep"
+	jsonFilePath := "templates/az204.json"
+
+	// convert bicep file to json
+	cmd := exec.Command("az", "bicep", "build", "--file", bicepFilePath, "--outfile", jsonFilePath)
+
+	stdout, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Error converting Bicep to JSON:", err)
+		os.Exit(1)
+	}
+
+	fmt.Println("Bicep file converted to JSON successfully:", string(stdout))
+
+	// get your json ARM template file
+	template, _ := readJSON(jsonFilePath)
 
 	deploymentsClient, err := armresources.NewDeploymentsClient(subscriptionId, cred, nil)
 	if err != nil {
@@ -90,9 +105,8 @@ func deployTemplate(
 		deploymentName,
 		armresources.Deployment{
 			Properties: &armresources.DeploymentProperties{
-				Mode:       to.Ptr(armresources.DeploymentModeIncremental),
-				Parameters: parameters,
-				Template:   template,
+				Mode:     to.Ptr(armresources.DeploymentModeIncremental),
+				Template: template,
 			},
 		},
 		nil,
@@ -131,8 +145,8 @@ func deployTemplate(
 	return nil
 }
 
-func readJSON(path string) (map[string]interface{}, error) {
-	localFile, err := os.ReadFile(path)
+func readJSON(jsonFilePath string) (map[string]interface{}, error) {
+	localFile, err := os.ReadFile(jsonFilePath)
 	if err != nil {
 		return nil, err
 	}
@@ -146,3 +160,5 @@ func readJSON(path string) (map[string]interface{}, error) {
 
 	return mappedJSON, nil
 }
+
+// Should ask to delete the resource

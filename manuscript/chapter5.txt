@@ -1,3 +1,8 @@
-# Contents 
-ARM Templates, JSON, Infustructure as code
+# Contents
 deployTemplate and readJSON functions
+
+We will take a look at a template file very soon, but first, lets review how the Go program will deploy the templates.
+
+BLURB
+A working definition of "deploy"
+

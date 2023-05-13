@@ -1,5 +1,3 @@
-# Contents:
-
 1. How can I authenticate (cover all methods)
 1. Why and steps to use the CLI for authentication
 1. Creating our first function call within main()
@@ -20,7 +18,6 @@ These steps sign-in my user principle and provide a token that the
 NewAzureCLICredential function will use across the Go SDK.
 This is what the above line does... 
 The first step in using the SDK is to provide an authentication token for creating and deploying resources.
-
 
 ## Give the SDK Access to Azure 
 [19] Next, I declare the required main function. I have seen Go programs that opt to put the main function at the bottom of the main package, but I personally like it to be at the top as it is the first function that gets called when the program is executed.
