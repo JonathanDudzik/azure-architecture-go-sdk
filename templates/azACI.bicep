@@ -1,9 +1,6 @@
-param aciName string = 'basic-aci-az204'
-
+param aciName string
 param containerName string
-
-// uses a function to determine the location
-param location string = resourceGroup().location
+param location string
 
 // Azure Container Instance
 resource container 'Microsoft.ContainerInstance/containerGroups@2022-09-01'= {
@@ -43,5 +40,3 @@ resource container 'Microsoft.ContainerInstance/containerGroups@2022-09-01'= {
     }
   }
 }
-
-output containerIP string = container.properties.ipAddress.ip

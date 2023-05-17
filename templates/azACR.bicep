@@ -1,22 +1,23 @@
 // Azure Container Registry
-param acrName string = 'BasicAcrAz204'
+param env string
+param product string
+param location string
+param acrSKU string
+param tagValues object
 
-@allowed([
-  'Basic'
-  'Premium'
-  'Standard' 
-])
-param acrSKU string = 'Basic'
-
-param location string = resourceGroup().location
+var registryName = 'acrjwd${env}${product}${location}'
 
 resource registry 'Microsoft.ContainerRegistry/registries@2022-12-01' = {
-  name: acrName
+  name: registryName
   location: location
   sku: {
     name: acrSKU
   }
+  tags: tagValues
   properties: {
     adminUserEnabled: true
   }
 }
+
+output registryName string = registry.name
+output registryId string = registry.id
