@@ -17,26 +17,45 @@ deploy_bicep() {
     --template-file templates/az204.bicep
 }
 
-get_resource_group_name() {
+handle_resource_group() {
   echo
-  echo ___________Get and display the resource group name___________________
-  resourceGroupName=$(az deployment sub list --query "[?contains(name, 'az204')].properties.outputs.resourceGroupName.value" --output tsv)
+  echo ___________RESOURCE GROUP___________________
+  # resourceGroupName=$(az deployment sub list --query "[?contains(name, 'az204')].properties.outputs.resourceGroupName.value" --output tsv)
+  resourceGroupName=rgdevaz204eastus
   echo Resource group name: $resourceGroupName
 }
 
-get_registry_name() {
+handle_container_registry() {
   echo
-  echo ___________Get and display the registry name
+  echo ___________AZURE CONTAINER REGISTRY________________________
   registryName=$(az deployment sub list --query "[?contains(name, 'az204')].properties.outputs.registryName.value" --output tsv)
   echo "Registry name: $registryName"
 }
 
-deploy_web_app() {
+handle_app_service() {
   echo
-  echo ______________Deploy a web app to the App Service______________________
+  echo ______________APP SERVICE______________________
   echo the Bicep template is responsible for creating the App Service Plan and App Service.
-  webAppName=$(az deployment sub list --query "[?contains(name, 'az204')].properties.outputs.appName.value" --output tsv)
+  # webAppName=$(az deployment sub list --query "[?contains(name, 'az204')].properties.outputs.appName.value" --output tsv)
+  webAppName=appdevaz204eastus
   echo Name of the Web App: $webAppName
+
+  echo Deploy a ZIP file of your app
+  cd ./azureWebApp &&
+  dotnet publish -o pub &&
+  cd pub &&
+  echo checking if the zip library is installed
+  if ! command -v zip &> /dev/null; then
+    echo "zip could not be found. Installing zip."
+    sudo apt install zip
+  else
+    echo "zip found. Skipping zip installation."
+  fi &&
+  zip -r site.zip . &&
+  az webapp deployment source config-zip \
+      --src site.zip \
+      --resource-group $resourceGroupName \
+      --name $webAppName
 }
 
 delete_resource_group() {
@@ -52,7 +71,7 @@ delete_resource_group() {
 
 # Execute the functions
 deploy_bicep
-get_resource_group_name
-get_registry_name
-deploy_web_app
+handle_resource_group
+# handle_container_registry
+# handle_app_service
 # delete_resource_group
