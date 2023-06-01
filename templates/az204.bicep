@@ -14,28 +14,52 @@ param location string = 'eastus'
 @allowed(['Basic', 'Premium', 'Standard'])
 param acrSKU string = 'Basic'
 
+@description('This is a description of the deployment')
+@allowed(['F1', 'P1V3', 'P2V3', 'P3V3'])
+param appSKU string = 'F1'
+
 var rgName = 'rgjwd${env}${product}${location}'
+var appServicePlanName = 'appServicePlan-jwd${env}${product}${location}'
+var appName = 'webSite-jwd${env}${product}${location}'
+var linuxFxVersion = 'DOTNETCORE|6.0'
 var tagValues = {
   createdBy: 'AZ CLI'
   environment: env
   product: product
-  onwer: 'Jonathan Dudzik'
+  owner: 'Jonathan Dudzik'
 }
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: rgName
   location: location
+  tags: tagValues
 }
 
 module acrModule './azACR.bicep' = {
   name: 'acrDeploy'
   scope: resourceGroup
   params: {
-    location: location // An explicit value will override the default value specified in the module file
+    location: location
     env: env
     product: product
     acrSKU: acrSKU
     tagValues: tagValues
+  }
+}
+
+module appModule './azApp.bicep' = {
+  name: 'appDeploy'
+  scope: resourceGroup
+  dependsOn: [
+    acrModule
+  ]
+  params: {
+    location: location
+    appServicePlanName: appServicePlanName
+    sku: appSKU
+    tagValues: tagValues
+    appName: appName
+    linuxFxVersion: linuxFxVersion
   }
 }
 
@@ -49,3 +73,4 @@ module acrModule './azACR.bicep' = {
 
 output resourceGroupName string = resourceGroup.name
 output registryName string = acrModule.outputs.registryName
+output appName string = appModule.outputs.appName
